@@ -65,9 +65,20 @@ void helloWorld(){
 
 One of the things I love about C is that everything is bits.  We choose to ready those bits as characters, decimal numbers, or hexadecimal, but at the end of the day C will allow you to do bitwise operations on `char`s, `int`s, and `long`s.  The main difference between these data types is their size in bytes (8 bits = 1 byte).  The function `printSizes()` displayes the number of bytes that make up each of these data types.  Unfortunately these sizes often varry between machines and processors so after you compile adn run the code you may see different numbers from what I got.
 
-|Data Type|Size (bytes)|
-|:-|:-|
-|char|1|
-|int|4|
-|long|8|
+	|Data Type|Size (bytes)|
+	|:-|:-|
+	|char|1|
+	|int|4|
+	|long|8|
+	|float|4|
+	|double|8|
+	
+`float` and `double` are how C stores fractional or floating point numbers.  They do not translate simply or direclty to binary code, but are useful for things like control systems.
+
+#### A Note on Hexidecimal
+
+Fundementally, a computer sotores, receives, transmits, and reads bits.  However, to say that a comptuer strores hexidecimal numbers is only half wrong.  Hexidecimal maps groups of 4 bits to a single charcter, which makes it much easier for a person to ready and ultimatley type into code file.  The computer does not store hexidecimal number in the sense that with `0x12AB` there is no `1` or `B` printed onto the disk or memory, rather they are bit strings like `0001` and `1011` which map to `1` and `B` respectively.  When we ask the computer the number is, the computer translates the data to a format that we want so we can read it as hexidecimal, decimal, or even octal, but that does not change the fact that we can perform bitwise `and`, `or`, or `not` operations on those numbers when we need to.
+
+### Working with Integers
+
 
