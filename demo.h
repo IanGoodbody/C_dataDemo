@@ -7,7 +7,12 @@
 #define BIT6 0x40
 #define BIT7 0x80
 
+#define DATA_BYTES 5
+
 void helloWorld();
 void printSizes();
 void intDemo();
 char* intToBin(int num, char* str, int len);
+void arrayDemo();
+char* arrayToBin(char* array, int len, char* str);
+void printArray(char* array, int len);

@@ -13,6 +13,7 @@ int main(){
 	helloWorld();
 	printSizes();
 	intDemo();
+	arrayDemo();
 	return 0;
 }
 
