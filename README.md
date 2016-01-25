@@ -1,19 +1,47 @@
 # C_dataDemo
 #### A quick primer on manipulating integer data C
 
-So I came to the pedigogical realization that giving you a book on C for UNIX and letting you wander into the frightening land that is C programming for embedded systems without telling you how they were different was a bit irresponsible.  Hopefully this C demo, complete with example code that you should be able to run on your machine, will give you a bit of a jump start with what is going on.
+So I came to the pedagogical realization that giving you a book on C for UNIX 
+and letting you wander into the frightening land that is C programming for 
+embedded systems (without telling you how they were different) was a bit 
+irresponsible.  Hopefully this C demo, complete with example code that you 
+should be able to run on your machine, will give you a bit of a jump start with 
+what is going on.
 
 ---
 
 ### C in Embedded Systems vs C in Computers
 
-Ok so technically an embedded system is a computer, but it is far simpler than the computers you are used to (like the one you are sitting in front of now).  A desktop or laptop computer is a general purpose computer capable of running a variety of applications at one time.  It has an operating system that divides up resources between multiple programs, usually several gigabytes of memory, and usually several processors running at a few billion clock cycles per second.
+Okay so technically an embedded system is a computer, but it is far simpler 
+than the computers you are used to (like the one you are sitting in front of 
+now).  A desktop or laptop computer is a general purpose computer capable of 
+running a variety of applications at one time.  It has an operating system that 
+divides up resources between multiple processes, several gigabytes of 
+memory, and usually multiple processors running at a few billion clock cycles 
+per second.
 
-The flexability of a desktop or laptop computer comes with notable power use and weight.  However, say we needed a computer that did one fairly simple task: no interface devices like a mouse, keyboard, or monitor to worry about; nanosecond execution times are excessive and pointless; and we have a 180 kg mass limit with power coming from side-mounted solar panels that we have to dump into a thruster.
+The flexibility of a desktop or laptop computer comes with notable power use 
+and weight.  However, say we needed a computer that did one fairly simple task: 
+there is no need for interface devices like a mouse, keyboard, or monitor; 
+nanosecond execution times are excessive and pointless; we have a 180 kg mass 
+limit; and our only power comes from side-mounted solar panels, most of which is 
+funneled into a thruster.
 
-Enter the microprocessor/embedded system.
+Enter the microprocessor as an embedded system.
 
-Microprocessors are increadibly ubiqutous, from cars to washing machines to toasters. (Yes, [toasters](http://cache.freescale.com/files/microcontrollers/doc/app_note/AN3414.pdf).  I guess it must control for crispiness or turn off near bathtubs or something).  The point being that a microprocessor is a small, lightweight, low-power comptuer perfectly suited for doing simple and straightforward comptuer things; providing just enough computing power a well defined task.  Like your laptop a microprocessor is a computer, that is it broadly uses the same system architecutre with a processor, memory, and IO; most importantly, it can be programed with a (relatively) high level language like C.  What you can do with C will be limited by the functions of the microprocessor (I once worked with a TI MSP430 microprocessor that couldn't multiply unless you got really creative), but overall the structure and functionality of C will work on a microprocessor just the same as with your laptop.
+Microprocessors are incredibly ubiquitous in most modern applications, from 
+cars to washing machines to toasters. (Yes, [toasters](http://cache.freescale.com/files/microcontrollers/doc/app_note/AN3414.pdf).  
+I guess it must control for crispiness or turn off near bathtubs or something).
+The point being that a microprocessor is a small, lightweight, low-power 
+computer  perfectly suited for doing simple and straightforward computer things;
+providing just enough computing power a well defined task.  Like your laptop, a 
+microprocessor is a computer, that is it broadly uses the same system 
+architecture with a processor, memory, and IO; most importantly, it can be 
+programed with a (relatively) high level language like C.  What you can do with 
+C will be limited by the functions of the microprocessor (I once worked with a 
+TI MSP430 microprocessor that couldn't multiply unless you got really creative),
+but overall the structure and functionality of C will work on a microprocessor 
+just the same as with your laptop.
 
 ### Wait what is C?
 
@@ -27,11 +55,16 @@ Microprocessors are increadibly ubiqutous, from cars to washing machines to toas
   for many tasks than supposedly more powerful languages.
 ```
 
-Most every moden computer stores programs as *machine code*, basically a series of bits stored on a disk or flash memory that tells the processor hardware what to do.  You can program in machine code if you have a few extra hours, know the instruction set architecture, and need to atone for some sin against computers.  While the early pioneers used machine code to program, they quickly invented *assembly code* to make their jobs a bit easier.  Honestly, assembly is practically a direct translation of machine code, but it has just enough words that you can make sense of it with enough training.  A sample is given in `arrayDemo.s`.
+Most every modern computer stores programs as *machine code*, basically a series 
+of bits stored on a disk or flash memory that tells the processor hardware what 
+to do.  You can program in machine code if you have a few extra hours, know the 
+instruction set architecture, and need to atone for some sin against computers.
+While the early pioneers used machine code to program, they quickly invented 
+*assembly code* to make their jobs a bit easier.  Honestly, assembly is practically a direct translation of machine code, but it has just enough words that you can make sense of it with enough training.  A sample is given in `arrayDemo.s`.
 
 The problem with assembly code is that it is specific to the computer you are using.  `arrayDemo.s` was created for an Intel processor with the dreaded x86 architecture and is meaningless to any other computer using a different architecture.  Also because assembly interacts directly with the hardware, the nice loops, branches, and functions that make programming easy have to be accomplished by telling the chip to jump around in the program's memory.
 
-The only reason one would ever program in assembly is for super low level functions, super fast program execution, pedagogy, or self loathing.  The next jump then is to a high level language where you can easy visualize and write high level programing structures and allow a comptuer program, called a compiler, to build assembly and machine code programs for you.  Enter C.
+The only reason one would ever program in assembly is for super low level functions, super fast program execution, pedagogy, or self loathing.  The next jump then is to a high level language where you can easy visualize and write high level programing structures and allow a computer program, called a compiler, to build assembly and machine code programs for you.  Enter C.
 
 The story is that Brian Kernighan and Dennis Ritchie were building an operating system called UNIX in 1972.  They had assembly code and a high level langauge called B.  B wasn't quite working for the computer they were building UNIX for, so they created C to make thier lives simpler.  UNIX is a free operating system and became fairly popular and C proliferated with it.  The advantage to C is that it is very simple (compared to the DoD's Ada which is still popular in Europe), provides a good abstraction of programming functionality, and it is portable.  C is not too far removed from the most common assembly instructions on most every chip, and thus can be easily compiled into most any version of assembly for most any microprocessor.
 
