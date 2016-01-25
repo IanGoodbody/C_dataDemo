@@ -24,6 +24,7 @@ void helloWorld(){
 void printSizes(){
 	printf("A \'char\' is %i bytes.\n", (int) sizeof(char));
 	printf("An \'int\' is %i bytes.\n", (int) sizeof(int));
+	printf("A \'short\' is %i bytes.\n", (int) sizeof(short));
 	printf("A \'long\' is %i bytes.\n", (int) sizeof(long));
 	printf("A \'float\' is %i bytes.\n", (int) sizeof(float));
 	printf("A \'double\' is %i bytes.\n", (int) sizeof(double));
