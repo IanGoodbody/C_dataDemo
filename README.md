@@ -202,4 +202,289 @@ number.
 
 ### Working with Integers
 
+The next function call in `main()` is `intDemo()` which I created to show how
+you would manipulate information that may be given as a complete integer.  You
+will receive some sort of input from an external device, it will be most likely
+be stored as a binary value, but I am less certain about the data type (the 
+size in bytes of your data) that the microprocessor will provide.  An integer
+is unlikely, however understanding how data is stored as an integer and how to 
+manipulate smaller units of data within the integer will be an important tool.
 
+#### Representing an Integer
+
+Lines 9 through 14 print out different representations of an integer.  The 
+console prints the integer in different formats indicated by the `%` tags.  
+There is a call to a function called `intToBin()` which converts an 
+integer to a string of binary characters; don't worry about how that function 
+works for now just know that there is no native way to produce a bunch of binary
+digits.  
+
+Hexadecimal, like I said before, is simply a mapping of bits to characters. 
+Hexadecimal most easily translates to bits and is the most compact
+representation of bits.
+
+Decimal numbers, both signed and unsigned, represent bits as a base 10 number 
+comfortably read by humans.  You will notice that the signed number is negative
+while the unsigned number is positive.  By default C treats integers as signed, 
+or two's complement, numbers.  There is some math behind the encoding of these 
+numbers but suffice to say that signed numbers can be read as negative or 
+positive and the easy way to tell the difference is that the first bit 
+determines the sign of the number.  Because `0xD` is encoded as `1101` the our 
+number is negative when read as a signed number.  An unsigned number takes the
+same data but does not treat it as a two's complement; unsigned numbers can
+only be positive.  Remember that this is the same data, but the computer is 
+interpreting it differently.  Signed and unsigned numbers actually use the same
+arithmetic functions for addition and subtraction, the computer or programmer
+simply has to interpret the result as signed or unsigned.  For logical bitwise 
+operators, and `&`, or `|`, and xor `^` 
+there is no difference between signed and unsigned
+numbers because these operate on the data as binary information.  There is
+some difference with the bit shift operators `>>` and `<<`, my best advice is
+to declare or cast the variable as an `unsigned int` before using those 
+operators.
+
+Octal numbers are sets of three binary digits mapped to a character (0 through 
+7) in stead of the four binary digits used for hexadecimal.  You probably won't
+use this for many applications but know that it exists.
+
+The binary representation takes the 4 bytes of an integer and maps it to 
+32 bits.  You will notice that the binary string is backwards, that is the
+least significant bit is the leftmost position and the most significant bit
+is in the rightmost position contrary to how you usually read a number.  
+This order is more representative to how you would see information laid out in
+little-endian memory systems, and in C array indexing, where higher order bits
+or array values are in higher value memory addresses.
+
+#### Bit Masking
+
+Oftentimes with embedded systems we have limited amount of memory and therefore
+attempt to cram as much data together as possible.  Say we have two pieces of 
+data that are each four bits long and our word size is eight bits.  In a desktop
+computer we can comfortably assign each of these values to a full 8 bit `char`
+or even a 4 byte `int` and not worry about the demand on the system.  For 
+microprocessors it is often advantageous to store both 4 bit values in one 8-bit
+`char`.  Bit masking uses __bitwise__ logical operators to manipulate 
+segments of data that are smaller than the minimum data size in C.
+
+##### Bitwise Versus Logical Operators
+
+So C has no data type that represents a boolean true and false, what C does is 
+it treats a `0` value as **FALSE** and any nonzero value as **TRUE**.  So the 
+code `(3 > 9)` is read by C as a `0` and `(3 < 9)` as `1` (1 is a fairly common
+default for a nonzero value).  These are referred to as *logical* values and
+the logical operators like *logical and* `&&`, *logical not* `!`,
+and *logical or* `||` will 
+perform boolean operations on the integer as a whole; `(a > 7 && a <= 16)`.
+
+In contrast, **bitwise** operators perform logical operations on each bit in
+an integer.  Logical operators use the double symbol while **bitwise operators
+use a single symbol**.  (Using a logical operator in place of a bitwise 
+operator will drive you to insanity looking for an error).  *Bitwise and* is 
+`&`, *bitwise or* is `|`, *bitwise xor* is '^', and *bitwise not* is '~'. 
+
+```c
+char a, b;
+char n, o, p, q;
+
+a = 0x17; 		// binary 0001 0111
+b = 0x3E; 		// binary 0011 1110
+
+n = a & b; // n = 0x18 or 0001 0110 
+o = a | b; // n = 0x3F or 0011 1111
+p = a ^ b; // n = 0x29 or 0010 1001
+q = ~a;	   // n = 0xE8 or 1110 1000
+```
+
+##### Bit Masking Examples
+
+The function `intDemo()` defines three bit masks that isolate different
+parts of the integer `0xDFEC1234`.  The most common mask uses the hexadecimal
+digit `0xF` because it represents a block of four `1`s.  Masking is done by 
+performing a bitwise and with the data you wish to mask and a mask integer 
+(the mask must be the same size as your data) with the bits you wish to mask 
+set to `1`.  Another way to look at bit masking is that any mask bit set to 
+`0` will set the corresponding bit in the result of the mask to zero.
+
+The first example masks the center bits of `0xDFEC1234`.
+```
+Mask:	0000 0000 0000 1111 1111 0000 0000 0000
+Data:	1101 1111 1110 1100 0001 0010 0011 0100
+     &------------------------------------------
+Result:	0000 0000 0000 1100 0001 0000 0000 0000
+```
+The bit mask kept the 8 bits in the center and set ever other bit to `0`.
+
+
+Bit making allows us to only look at certain bits while temporarily disregarding
+the other bits.  Say we wanted to test if the first 16 bits of this integer 
+were `0xDFEC`, we can "mask out" the 16 least significant bits.
+```c
+int a = 0xDFEC1234;
+
+if(a & 0xFFFF0000 == 0xDFEC0000)
+	printf("True\n");
+```
+A slightly more elegant version takes advantage of the bitwise not to simplify
+the mask and remove 
+the extraneous zeros.
+```c
+int a = 0xDFEC1234;
+
+if(a & ~0xFFFF == 0xDFEC0000)
+	printf("True\n");
+```
+
+##### Changing Bits
+
+Because we often cram several pieces of data into larger data type the ability
+to set, clear, and toggle individual bits within an integer is useful for 
+data processing.
+
+Setting bits guarantees that bits are set to `1`.  This is accomplished using
+a logical or, `|`, and a mask of the bits you want to set set to `1`.
+```c
+int a = 0xDFEC1234;
+
+a |= ~0xFFFF;
+// a = 0xFFFF1234
+```
+(Operators followed by an equals sign follow the form `a += b` -> `a = a + b`)
+
+Clearing bits guarantees that bits are set to `0`.  This is accomplished using
+a bitwise and with a mask with the bits you want cleared set to zero
+```c
+int a = 0xDFEC1234;
+
+a &= ~0xFFFF
+// a = 0xDFEC0000
+```
+This process is the same as the "bit masking" in the previous section.
+
+Toggling bits switches the selected bits from `0` to `1` or from `1` to `0`. 
+This is done using the bitwise xor with a mask of the bits you want toggled set
+to `1`.
+```c
+int a = 0xDFEC1234;
+
+a ^= ~0xFFFF;
+// a = 0x20131234
+```
+
+#### Arrays
+
+The last section of code in `main()` calls `arrayDemo()`. The most common IO 
+interface in C is an array of bytes or an array of `char`s.  An array in C is
+a sequence of data values set sequentially in memory.  Practically, it provides
+a way of storing data in an arbitrary number of bytes.  
+
+`arrayDemo()` creates an array of type `char` (each array element is 1 byte 
+long) containing 5 elements.  (`DATA_BYTES` is "defined" as 5 in the file
+demo.h; I will cover this in the next section).
+Note that there is not native data type in C that is 5 bytes long.
+```c
+char arrayData[5] = {
+	0x01, 0x02, 0x33, 0xDF, 0xEC};
+```
+
+Arrays don't need to be initialized (set to specific values) when they are 
+declared (telling the compiler to allocate the memory) as it is here.  Equally
+valid syntaxes are:
+```c
+char array1[] = {
+	0x01, 0x02, 0x33, 0xDF, 0xEC};
+
+char array2[5];
+array2[0] = 0x01;
+array2[1] = 0x02;
+array2[2] = 0x33;
+array2[3] = 0xDF;
+array2[4] = 0xEC;
+```
+
+The initialization of `array2` highlights how to access individual members of
+an array using the `[x]` syntax.  There are more complicated ways to access
+arrays called *pointers* and are shown by the `*` operator; we won't cover
+pointers in this document but the conversion is possible.  Accessing 
+members of an array with integer indexes allows us to use a `for` loop
+to iterate through the values fairly easily.  Also note that **array indexes in
+C start with 0**, this is distinct from MATLAB where indexes start at 1. 
+
+##### Testing Individual Bits
+
+Lines 17 and 18 demonstrate testing individual bits using bitwise operators.
+Oftentimes a `char` will be designated as *flag bits* and we want to see if 
+a flag is raised, set to `1`.  Values like `BIT7` are defined in demo.h, we will
+get there in a minute, to have only one bit set in a specifc position.  the code
+`a & BIT3` will return `0x00` if the bit at index 3 (fourth least significant
+bit) is cleared to `0`, and `0x08` if that bit is set to `1`.  Remember that
+for logical boolean values, `0` maps to false and anything else maps to 
+ture.  So abbreviated code like this is valid:
+```c
+#define BIT3 0x08
+
+char flags = 0x6A; // 0110 1010
+
+// We are interest if bit 3 is set
+if(flags & BIT3)
+	printf("Bit 3 is set\n");
+
+// To see if bit 3 is cleared
+if(!(flags & BIT3))
+	printf("Bit 3 is cleared\n");
+```
+
+#### Programming Notes for C
+
+One of a computer programmer's tools is the ability to break a program down
+into logical blocks of code called functions.  It is often easier to separate 
+related functions into their own files to make things easy to work on.
+While the compiler can easily link files together during compilation, there
+is common code often needed by all the files that is defined in a header or
+`.h` file.
+
+##### The Pre-compiler
+
+Header files contain mostly type definitions and pre-compiler commands which
+are prefaced by an octothorpe  `#`.  The pre-compiler's main job is to simply 
+paste text into a file.  `#include` effectively "pastes" a header file
+into the top of your program, which allows you to access all the functions
+defined in that specific header and associated libraries.  
+
+The other important pre-compiler command is `#define` which replaces one block
+of text with another.  We usually don't want to put straight numbers into
+our code because it is difficult to read and if we use the number several times
+we have to change every applicable reference to that number.  Usually the 
+solution is to declare a variable and use that variable throughout the program,
+but it adds an extra variable to your system.  `#define` is commonly used to 
+paste a number into a specific tag (by convention the tag is all capital 
+letters) without declaring a variable.
+
+Consider the following two blocks of code:
+```c
+char readBuffer[4096];
+
+int i;
+for(i = 0; i < 4096; i++)
+	readBuffer[i] = 0x0;
+```
+Changing the buffer size here requires changing `4096` twice in the code, and
+if the array declaration and for loop are far apart we can have all sorts of
+errors emerge if only one is changed.
+```c
+#define BUFFER_SIZE 4096
+
+char readBuffer[BUFFER_SIZE];
+
+int i;
+for(i = 0; i < BUFFER_SIZE; i++)
+	readBuffer[i] = 0x0;
+```
+We now only have to change one line of code.  Also if `BUFFER_SIZE` were defined
+in a header file, we could standardize the buffer size in all our code files.
+
+#### Conclusion
+
+Well, I hope this helps.  Remember the two reference books that are good for C
+are *The C Programming Langguage* by Brian Kernighan and Dennis Ritchie, and 
+Appendix C in *Digital Desin and COmputer Architecture* by Harris and Harris.
+Both these books are available on Safari books.

@@ -23,7 +23,7 @@ void intDemo(){
 	headTog = intData ^ ~0xFFFF;
 
 	printf("\nMasked Outputs:\n");
-	printf("Origninal:\t%.8X\n", intData);
+	printf("Original:\t%.8X\n", intData);
 
 	printf("\nMasking:\n");
 	printf("Center:\t\t%.8X\n", midMask);
