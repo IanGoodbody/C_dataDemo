@@ -448,7 +448,8 @@ Header files contain mostly type definitions and pre-compiler commands which
 are prefaced by an octothorpe  `#`.  The pre-compiler's main job is to simply 
 paste text into a file.  `#include` effectively "pastes" a header file
 into the top of your program, which allows you to access all the functions
-defined in that specific header and associated libraries.  
+defined in that specific header and associated libraries.  A pre-compiled
+C file is given in `arrayDemoPC.c`.
 
 The other important pre-compiler command is `#define` which replaces one block
 of text with another.  We usually don't want to put straight numbers into
