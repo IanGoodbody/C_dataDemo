@@ -171,14 +171,14 @@ that make up each of these data types.  Unfortunately, these sizes often vary
 between machines and processors so after you compile and run the code you may 
 see different numbers from what I got.
 
-	| Data Type | Size (bytes) |
-	| :-------- | -----------: |
-	| char   | 1 |
-	| int    | 4 |
-	| short  | 2 |
-	| long   | 8 |
-	| float  | 4 |
-	| double | 8 |
+| Data Type | Size (bytes) |
+| :-------- | -----------: |
+| char   | 1 |
+| int    | 4 |
+| short  | 2 |
+| long   | 8 |
+| float  | 4 |
+| double | 8 |
 	
 `float` and `double` are how C stores fractional or floating point numbers. 
 They do not translate directly or simply to binary code and thus you cannot use
@@ -186,7 +186,19 @@ bitwise operators on them, but are useful for things like control systems.
 
 #### A Note on Hexadecimal
 
-Fundamentally, a computer sotores, receives, transmits, and reads bits.  However, to say that a comptuer strores hexidecimal numbers is only half wrong.  Hexidecimal maps groups of 4 bits to a single charcter, which makes it much easier for a person to ready and ultimatley type into code file.  The computer does not store hexidecimal number in the sense that with `0x12AB` there is no `1` or `B` printed onto the disk or memory, rather they are bit strings like `0001` and `1011` which map to `1` and `B` respectively.  When we ask the computer the number is, the computer translates the data to a format that we want so we can read it as hexidecimal, decimal, or even octal, but that does not change the fact that we can perform bitwise `and`, `or`, or `not` operations on those numbers when we need to.
+Fundamentally, a computer stores, receives, transmits, and reads binary data.  
+However, to say that a computer stores hexadecimal numbers isn't exactly wrong.
+Hexadecimal maps groups of 4 bits to a single character which makes it much 
+easier for a person to ready and ultimately type as code.  The computer does not
+store a hexadecimal number in the sense that `0x12AB` is written to memory as a
+`1` and `B` characters.  Rather those characters are sequences of bits like 
+`0001` and `1011` which map to `1` and `B` respectively.  When we ask the 
+computer to retrieve the number, the computer translates the data to whatever 
+format that we want.  We can represent the number as hexadecimal, decimal, or 
+even octal.  We can write code for "is integer `a` equal to 15?" using a 
+hexadecimal number `(a == 0x0F)` or using a decimal number `(a == 15)`.  The 
+`0x` indicates to the computer that the programmer is writing a hexadecimal 
+number.
 
 ### Working with Integers
 
